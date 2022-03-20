@@ -1,0 +1,113 @@
+﻿@using projetoCompany.Models;
+@{
+    ViewBag.Title = "Index";    
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    List<Aluno> Certificados = (List<Aluno>)ViewData["listarCertificados"];
+    List<Aluno> alunos = (List<Aluno>)ViewData["listarAlunos"];
+}
+
+<h2>Index Professor</h2>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Menu</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" onclick="openTab('Alunos')" href="#">Alunos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="openTab('Adicionar')" href="#">Adicionar Aluno</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="openTab('Certificados')" href="#">Todos os certificados</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div id="Alunos" class="w3-container tab" style="display:none">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Email dos alunos</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in alunos)
+                {
+                    <tr>
+                        <td>@item.alunoEmail</td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="Adicionar" class="w3-container tab" style="display:none">
+    <div class="col-md-6">
+        <form class="w-50 p-3 pt-3 mx-auto" method="POST" action="~/Professor/adicionarAluno">
+            <label for="staticEmail" class="col-sm-2 col-form-label">Email do Aluno</label>
+
+            <input type="text" class="form-control" id="txtEmail" name="alunoEmail">
+
+            <label for="inputPassword" class="col-sm-2 col-form-label">Senha do aluno</label>
+
+            <input type="password" class="form-control" id="txtPassword" name="alunoSenha">
+            <br />
+            <button type="submit" class="btn btn-danger">Adicionar</button> <br>
+
+        </form>
+
+        @if (@ViewBag.msg != "")
+        {
+    <label class="col-sm-2 text-danger col-form-label">@ViewBag.msg</label>
+        }
+
+    </div>
+</div>
+<div id="Certificados" class="w3-container tab" style="display:none">
+    <div class="col-md-6">
+        @if(Certificados != null) { 
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Email</th>
+                    <th scope="col">Nome Certificado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var A in Certificados)
+                {
+                    <tr>
+                        <td>@A.alunoEmail</td>
+                        <td>@A.nomeCertificado</td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+        }
+    </div>
+</div>
+
+<script type="text/javascript">
+    function openTab(tabName) {
+        var i;
+        var x = document.getElementsByClassName("tab");
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        document.getElementById(tabName).style.display = "block";
+    }
+</script>
+

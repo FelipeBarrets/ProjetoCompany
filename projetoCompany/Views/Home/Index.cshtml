@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+
+<div class="card text-dark  bg-info mp-auto mb-auto mt-3">
+
+    <div class="card-body">
+        <form class="w-50 p-3 pt-3 mx-auto" method="POST" action="~/Aluno/Validar">
+            <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+
+            <input type="text" class="form-control" id="txtEmail" name="alunoEmail">
+
+            <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+
+            <input type="password" class="form-control" id="txtPassword" name="alunoSenha">
+            <br/>
+            <button type="submit" class="btn btn-danger">Entrar</button> <br>
+
+        </form>
+    </div>
+
+ </div>
+

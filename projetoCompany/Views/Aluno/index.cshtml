@@ -1,0 +1,156 @@
+﻿@using projetoCompany.Models;
+@{
+    ViewBag.Title = "pagPrincipalAluno";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Certificados> certificados = (List<Certificados>)ViewData["listaDeCertificados"];
+}
+
+
+<nav class="navbar-flex navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Menu</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" onclick="openTab('Certificados')" >Certificados</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="openTab('Adicionar')" href="#">Adicionar</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div id="Certificados" class="w3-container tab" style="display:none">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Certificado</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Horas</th>
+                    <th scope="col">Homologado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in certificados)
+                {
+                    <tr>
+                        <td>@item.nomeCertificado</td>
+                        <td>@item.tipoCertificado</td>
+                        <td>@item.horas</td>
+                        <td>@item.homologacao</td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div id="Adicionar" class="w3-container tab" style="display:none">
+    <div class="form-group">
+        <h3>Carregar Formulario</h3>
+        <input id="nomeCertificado" type="file" class="Editavel" accept="application/pdf" multiple />
+    </div>
+    <label class="form-label">Tipo do certificado</label>
+    <select id="tipoCertificado" name="tipoCertificado" class="form-select" aria-label="Default select example">
+        <option value="Curso_Presencial">Curso Presencial</option>
+        <option value="Curso_EAD">Curso EAD</option>
+        <option value="Congresso">Congresso</option>
+        <option value="Palestra">Palestra</option>
+        <option value="Estagio">Estagio</option>
+    </select>
+    <br />
+    <label class="form-label">Total de Horas</label>
+    <input id="horasCertificado" name="horasCertificado" type="number" class="form-control" />
+    <br />
+    <div class="text-center" style="margin-top: 30px">
+        <button class="btn btn-primary btn-lg Editavel" id="btnSalvarFormulario" onclick="SalvarPdf()" style="min-width: 200px"><i class="far fa-save"></i> Salvar Formulario</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function openTab(tabName) {
+        var i;
+        var x = document.getElementsByClassName("tab");
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        document.getElementById(tabName).style.display = "block";
+    }
+
+    function SalvarPdf() {
+        if ($('#nomeCertificado')[0].files != null) {
+
+
+            var imagem = $("#nomeCertificado")[0].files[0].size;
+                            if (imagem > 2024000) {
+                                alert('Não é permitido enviar arquivo maior que 2MB');
+                                return false
+                            }
+
+                            //Upload de Documentos
+            var total = $('#nomeCertificado')[0].files.length;
+                            for (var i = 0; i < total; i++) {
+                                var Id_Doc = $("#nomeCertificado").find("input").val();
+                                var files = $("#nomeCertificado").get(0).files;
+                                var tipoCertificado = $("#tipoCertificado").val();
+                                var horasCertificado = $("#horasCertificado").val();
+                                var fileData = new FormData();
+                               
+                                fileData.append(Id_Doc, files[i]);
+                                fileData.append("tipoCertificado", tipoCertificado);
+                                fileData.append("horasCertificado", horasCertificado);
+                                //debugger;                              
+
+                                $.ajax({
+                                    type: "POST",
+                                    url: '@Url.Action("UploadPdf", "Aluno")',
+                                    dataType: "json",
+                                    contentType: false, // Not to set any content header
+                                    processData: false, // Not to process data
+                                    data: fileData,
+                                    success: function (data) {
+
+                                        if (data.error == true) {
+                                            Swal.fire({
+                                                type: 'error',
+                                                title: 'Ops!, Houve uma falha no sistema, por favor tente novamente mais tarde.',
+                                                showCloseButton: true,
+                                                showCancelButton: false,
+                                                showConfirmButton: false,
+                                                focusConfirm: false,
+                                                timer: 2000
+                                            })
+                                            return false;
+                                        } else {
+
+                                            alert("Documento Enviado");
+
+                                        }
+                                    },
+                                    error: function () {
+                                        Swal.fire({
+                                            type: 'error',
+                                            title: 'Ops!, Houve uma falha no sistema, por favor tente novamente mais tarde.',
+                                            showCloseButton: true,
+                                            showCancelButton: false,
+                                            showConfirmButton: false,
+                                            focusConfirm: false,
+                                            timer: 2000
+                                        })
+                                        return false;
+                                    }
+                                });
+                            }
+                        }
+
+}
+
+</script>
+
